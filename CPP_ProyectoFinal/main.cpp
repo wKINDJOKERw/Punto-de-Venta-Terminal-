@@ -21,14 +21,24 @@ public:
         codigoBarras = "null";
     }
     
+    float getPrecio(){
+        return precio;
+    }
+    
+    string getProducto(){
+        return nombre;
+    }
+    
     string getCodigoBarras(){
         return codigoBarras;
     }
     //Mientras
     void imprimirProducto(){
+        cout << "************************************************************************************************************************" << endl;
         cout << "\tProducto: "<< nombre << endl;
-        cout << "\tMarca: "<< marca << endl;
-        cout << "\tprecio: "<< precio << endl;
+        cout << "\tMarca: "<< marca;
+        cout << "                    precio: "<< precio << endl;
+        cout << "************************************************************************************************************************" << endl;
     }
     
 private:
@@ -56,7 +66,7 @@ void almacen();
 Producto compararProductos(string codigo);
 //Variables globales
 float Cobrototal;
-int productostotales = 0;
+int productostotales = 0, noTiket = 0;
 Producto *productos = new Producto[20];
 
 
@@ -92,7 +102,14 @@ void ventasV(){
                     if(CodigoBarras == "salir"){
                         flagV2 = true;
                     }else{
-                        compararProductos(CodigoBarras);
+                        productoV[productosVendidos] = compararProductos(CodigoBarras);
+                        if(productoV[productosVendidos].getPrecio() != 0){
+                            Cobrototal += productoV[productosVendidos].getPrecio();
+                            cout << "-----" << productoV[productosVendidos].getProducto() << " Añadido!!" << endl << endl << endl;
+                            productosVendidos++;
+                        }else{
+                            cout << "-----No se encontro el producto, puede que no este dado de alta" << endl << endl << endl;
+                        }
                     }
                 }
                 
@@ -107,7 +124,10 @@ void ventasV(){
                     
                     switch (opcionBuscar) {
                         case 1:
+
                             for(int i= 0; i<productostotales; i++){
+                                cout << "\n************************************************ "<< i << " ************************************************" << endl;
+                                cout << "*                                                                                                          *" << endl;
                                 productos[i].imprimirProducto();
                             }
                             break;
@@ -121,6 +141,28 @@ void ventasV(){
                     }
                 }
                 
+                break;
+            case 3:
+                int dineroRecibido;
+                cout << "Subtotal: $" << Cobrototal << endl;
+                cout << "Total: $" << Cobrototal * 1.16 << endl << endl;
+                
+                cout << "Dinero Recibido: $";
+                cin >> dineroRecibido;
+                
+                cout << "\nCambio: $" << dineroRecibido - (Cobrototal * 1.16) << endl;
+                
+                break;
+            case 4:
+                cout << "************* Tienda R ******************" << endl;
+                cout << "************* # Ticket " << noTiket <<" ******************" << endl << endl;
+                for(int j = 0; j<productosVendidos;j++ ){
+                    productoV[j].imprimirProducto();
+                }
+                cout << "Subtotal: $" << Cobrototal << endl;
+                cout << "Total: $" << Cobrototal * 1.16 << endl << endl;
+                cout << "**************************************************\n*\n*\n*" ;
+                noTiket++;
                 break;
             case 5:
                 cout << "^^ Cerrando seccion de ventas ^^\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*" << endl;
@@ -142,19 +184,23 @@ void almacen(){
 }
 
 Producto compararProductos(string codigo){
-    string codigo2;
+    int found = -1;
     
     for(int i=0; i<productostotales;i++){
-        codigo2 = productos[0].getCodigoBarras();
-        if(!codigo.compare(codigo2)){
-            cout << " Encontrado!" << endl;
-            productos[i].imprimirProducto();
-        }else{
-            cout << "No Encontrado :(" << endl;
+        if(codigo == productos[i].getCodigoBarras()){
+            cout << "hola"<< endl;
+            found = i;
         }
     }
     
-    return productos[0];
+    if(found >=0){
+        return productos[found];
+    }else{
+        Producto basura;
+        return basura;
+    }
+    
+
 }
 
 //***********************************************************************************************************************
