@@ -75,8 +75,8 @@ Producto *productos = new Producto[20];
 
 void ventasV(){
     bool flagV1 = false, flagV2 = false, flagV3 = false;
-    int opcionV, productosVendidos=0, opcionBuscar = 0;
-    string CodigoBarras;
+    int opcionV, productosVendidos=0, opcionBuscar = 0, opcionBuscar2;
+    string CodigoBarras, opcionBuscar3;
     Producto *productoV = new Producto[20];
     
     cout << "************************************************************\n";
@@ -124,14 +124,42 @@ void ventasV(){
                     
                     switch (opcionBuscar) {
                         case 1:
-
+                            cout << "****** Seleccione el numero de algun producto o ingrese '-1' para salir: ";
                             for(int i= 0; i<productostotales; i++){
-                                cout << "\n************************************************ "<< i << " ************************************************" << endl;
-                                cout << "*                                                                                                          *" << endl;
+                                cout << "\n********************************************************** "<< i << " **********************************************************" << endl;
+                                cout << "*                                                                                                                *" << endl;
                                 productos[i].imprimirProducto();
                             }
+                            
+                            cout << "****** Seleccione el numero de algun producto o ingrese '-1' para salir: " << endl;
+                            cin >> opcionBuscar2;
+                            if(opcionBuscar2 >= 0 && opcionBuscar2 <= productostotales){
+                                productoV[productosVendidos] = productos[opcionBuscar2];
+                                Cobrototal += productoV[productosVendidos].getPrecio();
+                                cout << "-----" << productoV[productosVendidos].getProducto() << " Añadido!!" << endl << endl << endl;
+                                productosVendidos++;
+                            }
+                                
                             break;
                         case 2:
+                            cout << "Ingrese el nombre exacto del producto: ";
+                            cin >> opcionBuscar3;
+                            
+                            productoV[productosVendidos] = compararProductos(opcionBuscar3);
+                            if(productoV[productosVendidos].getPrecio() != 0){
+                                cout << "¿Quieres añadir " << productoV[productosVendidos].getProducto() << "? Teclea 'si' o 'no'"  << endl;
+                                string aniadir;
+                                cin >> aniadir;
+                                if(aniadir == "si"){
+                                    Cobrototal += productoV[productosVendidos].getPrecio();
+                                    cout << "-----" << productoV[productosVendidos].getProducto() << " Añadido!!" << endl << endl << endl;
+                                    productosVendidos++;
+                                }
+
+                            }else{
+                                cout << "-----No se encontro el producto, puede que no este dado de alta" << endl << endl << endl;
+                            }
+                            
                             break;
                         case 3:
                             flagV3 = true;
@@ -147,7 +175,7 @@ void ventasV(){
                 cout << "Subtotal: $" << Cobrototal << endl;
                 cout << "Total: $" << Cobrototal * 1.16 << endl << endl;
                 
-                cout << "Dinero Recibido: $";
+                cout << "Dinero Recibido: $" << endl;
                 cin >> dineroRecibido;
                 
                 cout << "\nCambio: $" << dineroRecibido - (Cobrototal * 1.16) << endl;
@@ -188,7 +216,6 @@ Producto compararProductos(string codigo){
     
     for(int i=0; i<productostotales;i++){
         if(codigo == productos[i].getCodigoBarras()){
-            cout << "hola"<< endl;
             found = i;
         }
     }
@@ -201,6 +228,25 @@ Producto compararProductos(string codigo){
     }
     
 
+}
+
+Producto compararProductosxNombre(string nombre){
+    int found = -1;
+    
+    for(int i=0; i<productostotales;i++){
+        if(nombre == productos[i].getProducto()){
+            found = i;
+        }
+    }
+    
+    if(found >=0){
+        return productos[found];
+    }else{
+        Producto basura;
+        return basura;
+    }
+    
+    
 }
 
 //***********************************************************************************************************************
